@@ -1,0 +1,6 @@
+__pycache__/
+.venv/
+vector_store.pkl
+chroma_store/
+.env
+*.db

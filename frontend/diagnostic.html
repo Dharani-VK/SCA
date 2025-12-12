@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Connectivity Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .code {
+            font-family: 'Courier New', monospace;
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔍 Backend Connectivity Diagnostic Tool</h1>
+
+        <div class="test-section">
+            <h2>Configuration</h2>
+            <div id="config"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 1: Backend Health Check</h2>
+            <button onclick="testHealth()">Test Health Endpoint</button>
+            <div id="health-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 2: CORS Test</h2>
+            <button onclick="testCORS()">Test CORS</button>
+            <div id="cors-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 3: Authentication</h2>
+            <button onclick="testAuth()">Test Login</button>
+            <div id="auth-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 4: File Upload</h2>
+            <input type="file" id="fileInput" accept=".txt,.pdf">
+            <button onclick="testUpload()">Test Upload</button>
+            <div id="upload-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Troubleshooting Tips</h2>
+            <ul>
+                <li>✅ Backend should be running on <code class="code">http://127.0.0.1:8000</code></li>
+                <li>✅ Frontend should be running on <code class="code">http://localhost:5173</code></li>
+                <li>✅ Check browser console (F12) for detailed errors</li>
+                <li>✅ Ensure no firewall is blocking connections</li>
+                <li>✅ Try disabling browser extensions if issues persist</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:8000';
+        let authToken = null;
+
+        // Display configuration
+        document.getElementById('config').innerHTML = `
+            <div class="info">
+                <strong>API Base URL:</strong> ${API_BASE_URL}<br>
+                <strong>Current Page:</strong> ${window.location.href}<br>
+                <strong>User Agent:</strong> ${navigator.userAgent}
+            </div>
+        `;
+
+        async function testHealth() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<div class="info">Testing...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+
+                if (response.ok && data.status === 'ok') {
+                    resultDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ SUCCESS: Backend is running!
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ ERROR: Unexpected response
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ ERROR: Cannot reach backend
+                        <br><br>
+                        <strong>Error:</strong> ${error.message}
+                        <br><br>
+                        <strong>Possible causes:</strong>
+                        <ul>
+                            <li>Backend is not running</li>
+                            <li>Backend is running on a different port</li>
+                            <li>Firewall is blocking the connection</li>
+                            <li>CORS issue (check browser console)</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        async function testCORS() {
+            const resultDiv = document.getElementById('cors-result');
+            resultDiv.innerHTML = '<div class="info">Testing CORS...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                };
+
+                resultDiv.innerHTML = `
+                    <div class="status success">
+                        ✅ CORS is working!
+                    </div>
+                    <pre>${JSON.stringify(corsHeaders, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ CORS Error: ${error.message}
+                        <br><br>
+                        Check browser console for detailed CORS errors.
+                    </div>
+                `;
+            }
+        }
+
+        async function testAuth() {
+            const resultDiv = document.getElementById('auth-result');
+            resultDiv.innerHTML = '<div class="info">Testing authentication...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        university: 'SCA',
+                        roll_no: 'DIAGNOSTIC_TEST',
+                        full_name: 'Diagnostic Test User',
+                        password: 'smart2025'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.access_token) {
+                    authToken = data.access_token;
+                    resultDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Authentication successful!
+                            <br><br>
+                            Token received (first 50 chars): ${authToken.substring(0, 50)}...
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ Authentication failed
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ ERROR: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testUpload() {
+            const resultDiv = document.getElementById('upload-result');
+            const fileInput = document.getElementById('fileInput');
+
+            if (!fileInput.files.length) {
+                resultDiv.innerHTML = '<div class="status error">❌ Please select a file first</div>';
+                return;
+            }
+
+            if (!authToken) {
+                resultDiv.innerHTML = '<div class="status error">❌ Please run authentication test first</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="info">Uploading file...</div>';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                const response = await fetch(`${API_BASE_URL}/ingest-file`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ File uploaded successfully!
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ Upload failed
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ ERROR: ${error.message}
+                        <br><br>
+                        <strong>This is the error you're seeing in the frontend!</strong>
+                        <br><br>
+                        <strong>Possible causes:</strong>
+                        <ul>
+                            <li>Network error - backend not reachable</li>
+                            <li>CORS preflight failure</li>
+                            <li>Request timeout</li>
+                            <li>Browser blocking the request</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-run health check on load
+        window.addEventListener('load', () => {
+            setTimeout(testHealth, 500);
+        });
+    </script>
+</body>
+
+</html>

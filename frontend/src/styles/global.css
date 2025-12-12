@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  color-scheme: light dark;
+  --ease-out-cubic: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  font-family: 'Source Sans Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html.dark {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+html.dark body {
+  background: radial-gradient(circle at top, rgba(79, 70, 229, 0.25), transparent 60%),
+    radial-gradient(circle at bottom, rgba(14, 165, 233, 0.2), transparent 55%),
+    #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(79, 70, 229, 0.75), rgba(14, 165, 233, 0.75));
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.65);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  0% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+}
+
+.upload-fade-in {
+  animation: fadeInUp 0.6s var(--ease-out-cubic);
+  animation-fill-mode: both;
+}
+
+.upload-stagger > * {
+  opacity: 0;
+  animation: fadeInUp 0.55s var(--ease-out-cubic) forwards;
+}
+
+.upload-stagger > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.upload-stagger > *:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.upload-stagger > *:nth-child(3) {
+  animation-delay: 0.19s;
+}
+
+.upload-stagger > *:nth-child(4) {
+  animation-delay: 0.26s;
+}
+
+.upload-stagger > *:nth-child(n + 5) {
+  animation-delay: 0.32s;
+}
+
+.upload-glow-ring {
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-glow-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.25), transparent 70%);
+  opacity: 0.35;
+  animation: glowPulse 6s linear infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .upload-fade-in,
+  .upload-stagger > *,
+  .upload-glow-ring::before {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

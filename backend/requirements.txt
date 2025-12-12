@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+python-multipart
+PyPDF2
+numpy
+pydantic
+requests
+chromadb
+sentence-transformers
+plotly
+python-dotenv
+openai
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt

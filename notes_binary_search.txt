@@ -1,0 +1,36 @@
+Binary Search Study Notes
+
+1. Overview
+   - Binary search finds a target value in a sorted list by repeatedly halving the search interval.
+   - Preconditions: the array must be sorted; random access is required for O(log n) performance.
+
+2. Iterative algorithm
+   - Maintain inclusive low and high indices.
+   - While low <= high:
+     * mid = low + (high - low) // 2
+     * if arr[mid] == target: return mid
+     * if arr[mid] < target: set low = mid + 1
+     * else: set high = mid - 1
+   - If the loop exits, the target is absent.
+
+3. Recursive formulation
+   - Base case: when low > high, return not found.
+   - Recurse on either left or right half after comparing arr[mid] to target.
+
+4. Complexity
+   - Time: O(log n) comparisons.
+   - Space: O(1) for iterative, O(log n) call stack for recursive.
+
+5. Common bugs
+   - Integer overflow when computing (low + high) // 2; mitigate with low + (high - low) // 2.
+   - Infinite loops from failing to update low or high correctly when duplicates exist.
+
+6. Variants
+   - First occurrence: continue searching left half when equality found.
+   - Last occurrence: continue searching right half when equality found.
+   - Lower bound: returns insertion point for a target.
+
+7. Applications
+   - Searching sorted arrays or binary search trees.
+   - Finding boundaries in monotonic predicates (e.g., first true in boolean array).
+   - Optimizing answers in problems solvable by decision checks (binary search on answer).
