@@ -1,12 +1,14 @@
 import clsx from 'clsx'
 import { SparklesIcon, UserIcon } from '@heroicons/react/24/outline'
 
+import type { SourceMetadata } from '../../types/chat'
+
 export type ChatRole = 'user' | 'assistant'
 
 type ChatMessageProps = {
   role: ChatRole
   content: string
-  sources?: string[]
+  sources?: SourceMetadata[]
 }
 
 function ChatMessage({ role, content, sources }: ChatMessageProps) {
@@ -49,9 +51,10 @@ function ChatMessage({ role, content, sources }: ChatMessageProps) {
               <div
                 key={i}
                 className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400"
+                title={`Topic: ${src.topic || 'Unknown'} | University: ${src.university || 'N/A'}`}
               >
                 <span className="mr-1">📄</span>
-                {src}
+                {src.original_filename || src.source || 'Unknown Source'}
               </div>
             ))}
           </div>

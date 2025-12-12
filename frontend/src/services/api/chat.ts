@@ -1,6 +1,6 @@
 import { FEATURE_FLAGS, API_BASE_URL } from '../../utils/constants'
 import { mockAskQuestion } from '../mocks/chat.mock'
-import type { ChatRequest, ChatResponse } from '../../types/chat'
+import type { ChatRequest, ChatResponse, SourceMetadata } from '../../types/chat'
 import { request } from '../httpClient'
 
 export async function askQuestion(payload: ChatRequest): Promise<ChatResponse> {
@@ -9,7 +9,7 @@ export async function askQuestion(payload: ChatRequest): Promise<ChatResponse> {
   }
 
   const result = await request<
-    { answer: string; sources: string[] },
+    { answer: string; sources: SourceMetadata[] },
     {
       question: string
       top_k?: number
