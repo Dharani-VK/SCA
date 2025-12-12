@@ -148,8 +148,16 @@ async def login_for_access_token(login_data: UnifiedLoginRequest):
         if not existing_student:
              expected_code = UNIVERSITY_ACCESS_CODES.get(login_data.university)
              is_admin_user = 0
+             
+             # ADMIN BYPASS: Allow creating admin immediately
              if login_data.password == "admin2025":
                  is_admin_user = 1
+                 
+             # DEMO BYPASS: Allow default student_a without proper university code
+             elif login_data.roll_no == "student_a" and login_data.password == "password123":
+                 pass
+                 
+             # Normal Registration Check
              elif not login_data.password or login_data.password != expected_code:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
