@@ -12,8 +12,8 @@ export default function Login() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         university: 'SCA',
-        roll_no: '',
-        password: ''
+        roll_no: 'student_a',
+        password: 'password123'
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -75,6 +75,27 @@ export default function Login() {
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2">Smart Campus Assistant</h1>
                     <p className="text-white/70">Student Login</p>
+                </div>
+
+                {/* Default Credentials Notice */}
+                <div className="mb-6 rounded-2xl border border-blue-500/30 bg-blue-900/40 p-4 text-sm text-blue-100 backdrop-blur-sm">
+                    <div className="flex items-start gap-3">
+                        <svg className="h-5 w-5 flex-shrink-0 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                            <p className="font-semibold text-blue-200">For Demonstration Purposes:</p>
+                            <p className="mt-1 opacity-90">
+                                This form is pre-filled with a default test account.
+                                <br />
+                                <strong>Username: </strong> student_a <br />
+                                <strong>Password: </strong> password123
+                            </p>
+                            <p className="mt-2 text-xs opacity-75">
+                                Please use these credentials to log in. Creating new users requires Admin access. Using other credentials may result in login failure.
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Login Card */}
